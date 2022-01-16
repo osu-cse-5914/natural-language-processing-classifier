@@ -250,7 +250,7 @@ def get(project_id, datum_id):
 @app.route('/data/<project_id>/<datum_id>', methods=['DELETE'])
 def delete(project_id, datum_id):
     '''
-    Get one data point
+    Delete one data point
     ---
     tags:
       - data
