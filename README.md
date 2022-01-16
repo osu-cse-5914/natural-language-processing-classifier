@@ -24,7 +24,7 @@ First, if you have not already done so, install Docker (https://www.docker.com/)
 
 This will create a new docker image called `nlpc`.  To run the service:
 
-`docker run -p 8081:8081 nlpc`
+`docker run -p 8081:5000 nlpc`
 
 This will start the web service.
 

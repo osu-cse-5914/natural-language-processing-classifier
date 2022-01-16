@@ -119,52 +119,8 @@ def nlc_add(project_id):
     return jsons.dumps(result)
 
 
-@app.route('/eval/<project_id>/<model_id>', methods=['POST'])
-def data_eval(project_id, model_id):
-    '''
-       Get one data point
-       ---
-       tags:
-         - model
-       parameters:
-           - in: path
-             name: project_id
-             type: string
-             required: true
-             description: project id
-           - in: path
-             name: model_id
-             type: string
-             required: true
-             description: ID to get
-           - name: text
-             in: body
-             schema:
-               type: array
-               items:
-                 type: object
-                 properties:
-                   features:
-                     type: object
-       responses:
-         200:
-           description: OK
-
-       '''
-    j = jsons.loads(request.data)
-    model = model_persister.get(project_id, uuid.UUID(model_id))
-    features = []
-    for input_datum in j:
-        features_for_this_datum = []
-        for feature_name in model.feature_names:
-            features_for_this_datum.append(input_datum["features"].get(feature_name, 0.0))
-        features.append(features_for_this_datum)
-    predictions = model.clf.predict(features)
-    return jsons.dumps(predictions)
-
-
 @app.route('/model/<project_id>/<model_id>', methods=['GET'])
-def get_model(project_id,model_id):
+def get_model(project_id, model_id):
     '''
        Get one data point
        ---
@@ -188,6 +144,7 @@ def get_model(project_id,model_id):
        '''
 
     return jsons.dumps(model_persister.get(project_id, uuid.UUID(model_id)))
+
 
 @app.route('/model/<project_id>', methods=['GET'])
 def get_all_models(project_id):
@@ -263,42 +220,8 @@ def train(project_id):
     return jsons.dumps(model_id)
 
 
-
-@app.route('/data/<project_id>', methods=['POST'])
-def add(project_id):
-    '''adding endpoint
-    This is a description
-    ---
-    tags:
-      - data
-    parameters:
-        - in: path
-          name: project_id
-          type: string
-          required: true
-          description: project id
-        - name: text
-          in: body
-          schema:
-            type: object
-            properties:
-              outcome:
-                type: string
-              features:
-                type: object
-    responses:
-      200:
-        description: OK
-
-    '''
-    j = jsons.loads(request.data)
-    val = Datum(**j)
-    datum_id = persister.add(project_id,val)
-    return jsons.dumps(datum_id)
-
-
 @app.route('/data/<project_id>/<datum_id>', methods=['GET'])
-def get(project_id,datum_id):
+def get(project_id, datum_id):
     '''
     Get one data point
     ---
@@ -327,7 +250,7 @@ def get(project_id,datum_id):
 @app.route('/data/<project_id>/<datum_id>', methods=['DELETE'])
 def delete(project_id, datum_id):
     '''
-    Get one data point
+    Delete one data point
     ---
     tags:
       - data
@@ -351,8 +274,9 @@ def delete(project_id, datum_id):
     persister.delete(project_id, uuid.UUID(datum_id))
     return '', http.HTTPStatus.NO_CONTENT
 
+
 @app.route('/data/<project_id>', methods=['GET'])
-def getAll():
+def getAll(project_id):
     '''
     Get all data points
     ---
@@ -369,7 +293,7 @@ def getAll():
         description: OK
 
     '''
-    return jsons.dumps(persister.get_all())
+    return jsons.dumps(persister.get_all(project_id))
 
 
 class DevServer:
