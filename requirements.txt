@@ -1,0 +1,5 @@
+flasgger==0.9.5
+Flask==2.0.2
+jsons==1.6.0
+pytest==6.2.5
+scikit_learn==1.0.2
